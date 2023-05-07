@@ -93,9 +93,9 @@ card *loadDeck(char filename[], char command[]) {
     card *deck = makeDeck(filename);
     card *currentCard = deck;
     if (currentCard->value != NULL) {
-        execute = true;
+        validInput = true;
     } else {
-        execute = false;
+        validInput = false;
     }
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     int counter = 0;
@@ -120,7 +120,7 @@ card *loadDeck(char filename[], char command[]) {
         }
         currentCard = currentCard->next;
     }
-    printInputStatus(command, execute);
+    printInputStatus(command, validInput);
     return deck;
 }
 
@@ -128,12 +128,12 @@ card *loadDeck(char filename[], char command[]) {
 /// \param command
 /// \param deck
 void showCommand(char command[], card *deck) {
-    bool execute;
+    bool validInput;
 
     if (deck->value != NULL) {
-        execute = true;
+        validInput = true;
     } else {
-        execute = false;
+        validInput = false;
     }
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     int counter = 0;
@@ -158,115 +158,47 @@ void showCommand(char command[], card *deck) {
         }
         deck = deck->next;
     }
-    printInputStatus(command, execute);
+    printInputStatus(command, validInput);
 }
 
-void printGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, int longest) {
-    card *tmp1 = c1;
-    card *tmp2 = c2;
-    card *tmp3 = c3;
-    card *tmp4 = c4;
-    card *tmp5 = c5;
-    card *tmp6 = c6;
-    card *tmp7 = c7;
-    int num = 1;
+///
+/// \param deck
+/// \param command
+void printGame(card *deck, char command[]) {
+    bool validInput;
+    card *currentCard = deck;
 
-    for (int i = 0; i < longest; ++i) {
-        char c11, c12, c21, c22, c31, c32, c41, c42, c51, c52, c61, c62, c71, c72;
-        if (tmp1 != NULL) {
-            c11 = tmp1->value[0];
-            c12 = tmp1->value[1];
-        } else {
-            c11 = ' ';
-            c12 = ' ';
-        }
-        if (tmp2 != NULL) {
-            c21 = tmp2->value[0];
-            c22 = tmp2->value[1];
-        } else {
-            c21 = ' ';
-            c22 = ' ';
-        }
-        if (tmp3 != NULL) {
-            c31 = tmp3->value[0];
-            c32 = tmp3->value[1];
-        } else {
-            c31 = ' ';
-            c32 = ' ';
-        }
-        if (tmp4 != NULL) {
-            c41 = tmp4->value[0];
-            c42 = tmp4->value[1];
-        } else {
-            c41 = ' ';
-            c42 = ' ';
-        }
-        if (tmp5 != NULL) {
-            c51 = tmp5->value[0];
-            c52 = tmp5->value[1];
-        } else {
-            c51 = ' ';
-            c52 = ' ';
-        }
-        if (tmp6 != NULL) {
-            c61 = tmp6->value[0];
-            c62 = tmp6->value[1];
-        } else {
-            c61 = ' ';
-            c62 = ' ';
-        }
-        if (tmp7 != NULL) {
-            c71 = tmp7->value[0];
-            c72 = tmp7->value[1];
-        } else {
-            c71 = ' ';
-            c72 = ' ';
-        }
-        if (i == 0 || i == 2 || i == 4 || i == 6) {
-            printf("%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t\t%s\tF%i\n", c11, c12, c21, c22, c31, c32, c41, c42, c51,
-                   c52, c61, c62, c71, c72, "[]", num);
-            num++;
-        } else {
-            printf("%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t\n", c11, c12, c21, c22, c31, c32, c41, c42, c51, c52,
-                   c61, c62, c71, c72);
-
-        }
-        if (tmp1 == NULL) {
-            tmp1 = NULL;
-        } else {
-            tmp1 = tmp1->next;
-        }
-        if (tmp2 == NULL) {
-            tmp2 = NULL;
-        } else {
-            tmp2 = tmp2->next;
-        }
-        if (tmp3 == NULL) {
-            tmp3 = NULL;
-        } else {
-            tmp3 = tmp3->next;
-        }
-        if (tmp4 == NULL) {
-            tmp4 = NULL;
-        } else {
-            tmp4 = tmp4->next;
-        }
-        if (tmp5 == NULL) {
-            tmp5 = NULL;
-        } else {
-            tmp5 = tmp5->next;
-        }
-        if (tmp6 == NULL) {
-            tmp6 = NULL;
-        } else {
-            tmp6 = tmp6->next;
-        }
-        if (tmp7 == NULL) {
-            tmp7 = NULL;
-        } else {
-            tmp7 = tmp7->next;
-        }
+    if (deck->value != NULL) {
+        validInput = true;
+    } else {
+        validInput = false;
     }
+
+
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int counter = 0;
+    int lines = 0;
+
+    while (currentCard->value != NULL) {
+        printf("[]\t");
+        counter++;
+        if (counter == 7) {
+            if (lines == 0) {
+                printf("\t[]\tF1");
+            } else if (lines == 2) {
+                printf("\t[]\tF2");
+            } else if (lines == 4) {
+                printf("\t[]\tF3");
+            } else if (lines == 6) {
+                printf("\t[]\tF4");
+            }
+            printf("\n");
+            counter = 0;
+            lines++;
+        }
+        currentCard = currentCard->next;
+    }
+    printInputStatus(command, validInput);
 }
 
 ///
@@ -396,7 +328,7 @@ void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *
     tmp->next = NULL;
 
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    printGame(c1, c2, c3, c4, c5, c6, c7, 11);
+    printGame(deck,command);
 
     printInputStatus(command, true);
 
@@ -415,7 +347,8 @@ void printStart(void) {
     printf("INPUT>");
 }
 
-
+///
+/// \return
 int main() {
 
     bool gameInProgress = true;
@@ -523,10 +456,12 @@ int main() {
                         } else {
                             number = rand() % 52;
                             deck = commandSI(deck, number);
+                            printGame(deck,input);
                         }
                     }
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
+                    printGame(deck,input);
                 }
                 break;
             case 10:
@@ -542,7 +477,6 @@ int main() {
 
                     }
                 }
-
                 break;
         }
 
