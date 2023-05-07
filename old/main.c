@@ -4,12 +4,12 @@
 
 void printStartFormat();
 card* loadDeck(char[],char[]);
-void show(char[],card*);
-void playPhase(card*,card*,card*,card*,card*,card*,card*,card*,char*);
+void showCommand(char *command, card *deck);
+void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, card *deck, char *command);
 void printEndLines(char*,bool);
 int getLongestList(card*,card*,card*,card*,card*,card*,card*);
-void printLines(card*,card*,card*,card*,card*,card*,card*,int);
-void printEmpty(char*,char*);
+void printGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, int longest);
+void printDefault(char*, char*);
 
 
 //The main method that manages the gameflow through switch cases.
@@ -150,18 +150,9 @@ int main() {
 
     return 0;
 }
-void printStartFormat(void){
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF1\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF2\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF3\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF4\n");
-    printf("LAST command:\n");
-    printf("Message:\n");
-    printf("INPUT>");
-}
+
 //prints out an empty version of the default output
-void printEmpty(char* lastCommand,char* message){
+void printDefault(char* lastCommand, char* message){
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
     printf("\t\t\t\t\t\t\t\t[]\tF1\n");
     printf("\t\t\t\t\t\t\t\t[]\tF2\n");
@@ -216,7 +207,7 @@ card* loadDeck(char filename[],char command[]){
 }
 
 //Shows the current deck of cards in their shuffled (or unshuffled) order.
-void show(char command[],card* deck){
+void showCommand(char command[], card* deck){
     bool execute;
 
     if(deck->value != NULL){
@@ -251,7 +242,7 @@ void show(char command[],card* deck){
 }
 
 //Initiates the PLAY phase for the game.
-void playPhase(card* c1,card* c2,card* c3,card* c4,card* c5,card* c6, card* c7,card* deck,char* command){
+void playGame(card* c1, card* c2, card* c3, card* c4, card* c5, card* c6, card* c7, card* deck, char* command){
     card* tmp;
     c1 = deck;
     c1->visible = true;
@@ -385,7 +376,7 @@ int getLongestList(card* c1,card* c2,card* c3,card* c4,card* c5,card* c6,card* c
 
 
 //Prints out the columns to the terminal, doesn't take foundations into account.
-void printLines(card* c1,card* c2,card* c3,card* c4,card* c5,card* c6, card* c7,int longest){
+void printGame(card* c1, card* c2, card* c3, card* c4, card* c5, card* c6, card* c7, int longest){
     card* tmp1 = c1;
     card* tmp2 = c2;
     card* tmp3 = c3;

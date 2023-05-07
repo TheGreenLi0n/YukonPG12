@@ -100,7 +100,7 @@ card* createDeck (char filename[]) {
 }
 
 //Shuffles the deck, splitting it into two piles based on the split-value.
-struct card* splitShuffle(card* head, int split){
+struct card* commandSI(card* head, int split){
 
     card* head1 = NULL;
     card* head2 = NULL;
