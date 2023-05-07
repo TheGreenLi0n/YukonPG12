@@ -1,115 +1,50 @@
 #include <stdio.h>
 #include <string.h>
-
 #include <stdbool.h>
 #include <stdlib.h>
 
-
-typedef struct Card {
-    struct Card *next;
+struct Card {
     char value[2];
+    struct Card *next;
     bool isVisible;
-} card;
+};
+typedef struct Card card;
 
+///
+/// \param filename
+/// \return
+card* makeDeck (char filename[]){
+    char nameOfFile[80];
+    card *nextCard;
+    card *currentCard;
+    card *prevCard;
+    FILE* file;
+    strcpy(nameOfFile, filename);
+    strcat(nameOfFile, ".txt");
+    file = fopen(nameOfFile, "r");
+    currentCard = (card*)malloc(sizeof(card));
 
-card *createDeck(char filename[]) {
-    char fileName[28];
-    FILE *file;
-    card *head = NULL, *pCard, *tail = NULL;
-
-    strcpy(fileName, filename);
-    strcat(fileName, ".txt");
-
-    file = fopen(fileName, "r");
-    pCard = (card *) malloc(sizeof(card));
-
-    while (fscanf(file, "%s,", pCard->value) != EOF) {
-        if (head == NULL) {
-            head = pCard;
-        } else {
-            tail->next = pCard;
+    for (int i = 0; i < 52; i++){
+        fscanf(file, "%s", currentCard -> value);
+        currentCard -> isVisible = true;
+        if (nextCard != NULL){
+            prevCard -> next = currentCard;
         }
-        tail = pCard;
-        tail->next = NULL;
-        pCard = (card *) malloc(sizeof(card));
+        else{
+            nextCard = currentCard;
+        }
+        prevCard = currentCard;
+        prevCard -> next = NULL;
+        currentCard = (card*) malloc(sizeof(card));
     }
     fclose(file);
-    return head;
+    return nextCard;
 }
 
-struct card *commandSI(card *head, int split) {
-
-    card *head1 = NULL;
-    card *head2 = NULL;
-    card *tail1 = NULL;
-    card *newDeck = NULL;
-    card *tmp;
-    int splitRest = 52 - split;
-    int shuffleNO;
-    int biggestPile;
-
-    head1 = head;
-    head2 = head;
-    tail1 = head1;
-    if (split == 52 || split == 0) {
-        return head;
-    }
-
-
-    for (int i = 0; i < split; ++i) {
-        head2 = head2->next;
-    }
-
-    for (int i = 0; i < split - 1; ++i) {
-        tail1 = tail1->next;
-    }
-
-    if (split > splitRest) {
-        shuffleNO = splitRest;
-        biggestPile = 1;
-    } else {
-        shuffleNO = split;
-        biggestPile = 2;
-    }
-
-    newDeck = head1;
-    tmp = newDeck;
-    head1 = head1->next;
-    for (int i = 0; i < shuffleNO * 2 - 1; ++i) {
-        if (i % 2 == 1) {
-            tmp->next = head1;
-            tmp = tmp->next;
-            head1 = head1->next;
-        } else {
-            tmp->next = head2;
-            tmp = tmp->next;
-            head2 = head2->next;
-        }
-
-    }
-
-    if (biggestPile == 1) {
-        while (head1 != tail1->next) {
-            tmp->next = head1;
-            tmp = tmp->next;
-            head1 = head1->next;
-
-        }
-    } else {
-        while (head2 != NULL) {
-            tmp->next = head2;
-            tmp = tmp->next;
-            head2 = head2->next;
-        }
-    }
-
-    tmp->next = NULL;
-    return newDeck;
-}
-
-
-//Saves the deck to a file.
-void saveDeck(card *deck, char filename[]) {
+///
+/// \param deck
+/// \param filename
+/*void saveDeck(card *deck, char filename[]) {
     char nameOfFile[28];
     FILE *f;
     strcpy(nameOfFile, filename);
@@ -122,24 +57,13 @@ void saveDeck(card *deck, char filename[]) {
         deck = deck->next;
     }
     fclose(f);
-}
-
-//prints out an empty version of the default output
-void printDefault(char *lastCommand, char *message) {
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF1\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF2\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF3\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF4\n");
-    printf("LAST command: %s", lastCommand);
-    printf("Message: %s\n", message);
-    printf("INPUT>");
-}
-
-
-void printInputStatus(char *lastCommand, bool success) {
+}*/
+///
+/// \param lastCommand
+/// \param success
+void printInputStatus(char *lastCommand, bool validInput) {
     printf("\nLAST command: %\n", lastCommand);
-    if (success) {
+    if (validInput) {
         printf("Message: OK\n");
     } else {
         printf("Message: ERROR\n");
@@ -147,9 +71,26 @@ void printInputStatus(char *lastCommand, bool success) {
     printf("INPUT>");
 }
 
+///
+/// \param lastCommand
+/// \param statusMessage
+void defaultTemplate(char *lastCommand, char *statusMessage) {
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
+    printf("\t\t\t\t\t\t\t\t[]F1\n");
+    printf("\t\t\t\t\t\t\t\t[]F2\n");
+    printf("\t\t\t\t\t\t\t\t[]F3\n");
+    printf("\t\t\t\t\t\t\t\t[]F4\n");
+    printInputStatus(lastCommand, statusMessage);
+}
+
+
+///
+/// \param filename
+/// \param command
+/// \return
 card *loadDeck(char filename[], char command[]) {
-    bool execute;
-    card *deck = createDeck(filename);
+    bool validInput;
+    card *deck = makeDeck(filename);
     card *currentCard = deck;
     if (currentCard->value != NULL) {
         execute = true;
@@ -183,7 +124,9 @@ card *loadDeck(char filename[], char command[]) {
     return deck;
 }
 
-// This is a command that shows the deck containing all the cards.
+///
+/// \param command
+/// \param deck
 void showCommand(char command[], card *deck) {
     bool execute;
 
@@ -326,7 +269,90 @@ void printGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card 
     }
 }
 
+///
+/// \param head
+/// \param split
+/// \return
+struct card *commandSI(card *head, int split) {
 
+    card *head1 = NULL;
+    card *head2 = NULL;
+    card *tail1 = NULL;
+    card *newDeck = NULL;
+    card *tmp;
+    int splitRest = 52 - split;
+    int shuffleNO;
+    int biggestPile;
+
+    head1 = head;
+    head2 = head;
+    tail1 = head1;
+    if (split == 52 || split == 0) {
+        return head;
+    }
+
+
+    for (int i = 0; i < split; ++i) {
+        head2 = head2->next;
+    }
+
+    for (int i = 0; i < split - 1; ++i) {
+        tail1 = tail1->next;
+    }
+
+    if (split > splitRest) {
+        shuffleNO = splitRest;
+        biggestPile = 1;
+    } else {
+        shuffleNO = split;
+        biggestPile = 2;
+    }
+
+    newDeck = head1;
+    tmp = newDeck;
+    head1 = head1->next;
+    for (int i = 0; i < shuffleNO * 2 - 1; ++i) {
+        if (i % 2 == 1) {
+            tmp->next = head1;
+            tmp = tmp->next;
+            head1 = head1->next;
+        } else {
+            tmp->next = head2;
+            tmp = tmp->next;
+            head2 = head2->next;
+        }
+
+    }
+
+    if (biggestPile == 1) {
+        while (head1 != tail1->next) {
+            tmp->next = head1;
+            tmp = tmp->next;
+            head1 = head1->next;
+
+        }
+    } else {
+        while (head2 != NULL) {
+            tmp->next = head2;
+            tmp = tmp->next;
+            head2 = head2->next;
+        }
+    }
+
+    tmp->next = NULL;
+    return newDeck;
+}
+
+///
+/// \param c1
+/// \param c2
+/// \param c3
+/// \param c4
+/// \param c5
+/// \param c6
+/// \param c7
+/// \param deck
+/// \param command
 void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, card *deck, char *command) {
     card *tmp;
     c1 = deck;
@@ -430,7 +456,7 @@ int main() {
                     } else
                         deck = loadDeck("", input);
                 } else {
-                    printDefault(input, "ERROR");
+                    defaultTemplate(input, "ERROR");
                 }
 
                 break;
@@ -452,9 +478,9 @@ int main() {
                         char *fileName;
                         fileName = strstr(input, " ") + 1;
                         strtok(fileName, "\n");
-                        saveDeck(deck, fileName);
+                        //saveDeck(deck, fileName);
                     } else {
-                        saveDeck(deck, "cards");
+                        //saveDeck(deck, "cards");
                     }
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
@@ -519,6 +545,7 @@ int main() {
 
                 break;
         }
+
     }
 
     return 0;
