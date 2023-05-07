@@ -6,7 +6,7 @@ void printStartFormat();
 card* loadDeck(char[],char[]);
 void showCommand(char *command, card *deck);
 void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, card *deck, char *command);
-void printEndLines(char*,bool);
+void printInputStatus(char*, bool);
 int getLongestList(card*,card*,card*,card*,card*,card*,card*);
 void printGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, int longest);
 void printDefault(char*, char*);
@@ -295,7 +295,7 @@ void playGame(card* c1, card* c2, card* c3, card* c4, card* c5, card* c6, card* 
 }
 
 //Prints the three status lines: Last command, message and input.
-void printEndLines(char* lastCommand, bool success) {
+void printInputStatus(char* lastCommand, bool success) {
     printf("\nLAST command: %\n", lastCommand);
     if (success) {
         printf("Message: OK\n");

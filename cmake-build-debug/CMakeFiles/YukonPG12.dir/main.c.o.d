@@ -40,7 +40,7 @@ CMakeFiles/YukonPG12.dir/main.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/strings.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/secure/_strings.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/secure/_string.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/13.1.6/include/stdbool.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdbool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/stdlib.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/sys/wait.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/sys/_types/_pid_t.h \
@@ -59,7 +59,7 @@ CMakeFiles/YukonPG12.dir/main.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/sys/_types/_sigset_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/sys/resource.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/13.1.6/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/_types/_uint16_t.h \
