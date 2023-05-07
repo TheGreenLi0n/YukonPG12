@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Card.c"
+#include <mm_malloc.h>
 
 void printStartFormat();
 card* loadDeck(char[],char[]);

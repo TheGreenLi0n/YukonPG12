@@ -1,42 +1,210 @@
 #include <stdio.h>
 #include <string.h>
-
 #include <stdbool.h>
 #include <stdlib.h>
 
-
-typedef struct Card {
-    struct Card *next;
+struct Card {
     char value[2];
+    struct Card *next;
     bool isVisible;
-} card;
+};
+typedef struct Card card;
 
+///
+/// \param filename
+/// \return
+card* makeDeck (char filename[]){
+    char nameOfFile[80];
+    card *nextCard;
+    card *currentCard;
+    card *prevCard;
+    FILE* file;
+    strcpy(nameOfFile, filename);
+    strcat(nameOfFile, ".txt");
+    file = fopen(nameOfFile, "r");
+    currentCard = (card*)malloc(sizeof(card));
 
-card *createDeck(char filename[]) {
-    char fileName[28];
-    FILE *file;
-    card *head = NULL, *pCard, *tail = NULL;
-
-    strcpy(fileName, filename);
-    strcat(fileName, ".txt");
-
-    file = fopen(fileName, "r");
-    pCard = (card *) malloc(sizeof(card));
-
-    while (fscanf(file, "%s,", pCard->value) != EOF) {
-        if (head == NULL) {
-            head = pCard;
-        } else {
-            tail->next = pCard;
+    for (int i = 0; i < 52; i++){
+        fscanf(file, "%s", currentCard -> value);
+        currentCard -> isVisible = true;
+        if (nextCard != NULL){
+            prevCard -> next = currentCard;
         }
-        tail = pCard;
-        tail->next = NULL;
-        pCard = (card *) malloc(sizeof(card));
+        else{
+            nextCard = currentCard;
+        }
+        prevCard = currentCard;
+        prevCard -> next = NULL;
+        currentCard = (card*) malloc(sizeof(card));
     }
     fclose(file);
-    return head;
+    return nextCard;
 }
 
+///
+/// \param deck
+/// \param filename
+/*void saveDeck(card *deck, char filename[]) {
+    char nameOfFile[28];
+    FILE *f;
+    strcpy(nameOfFile, filename);
+    strcat(nameOfFile, ".txt");
+    f = fopen(nameOfFile, "w");
+
+    while (deck->value != NULL) {
+        fprintf(f, deck->value);
+        fprintf(f, "\n");
+        deck = deck->next;
+    }
+    fclose(f);
+}*/
+///
+/// \param lastCommand
+/// \param success
+void printInputStatus(char *lastCommand, bool validInput) {
+    printf("\nLAST command: %\n", lastCommand);
+    if (validInput) {
+        printf("Message: OK\n");
+    } else {
+        printf("Message: ERROR\n");
+    }
+    printf("INPUT>");
+}
+
+///
+/// \param lastCommand
+/// \param statusMessage
+void defaultTemplate(char *lastCommand, char *statusMessage) {
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
+    printf("\t\t\t\t\t\t\t\t[]F1\n");
+    printf("\t\t\t\t\t\t\t\t[]F2\n");
+    printf("\t\t\t\t\t\t\t\t[]F3\n");
+    printf("\t\t\t\t\t\t\t\t[]F4\n");
+    printInputStatus(lastCommand, statusMessage);
+}
+
+
+///
+/// \param filename
+/// \param command
+/// \return
+card *loadDeck(char filename[], char command[]) {
+    bool validInput;
+    card *deck = makeDeck(filename);
+    card *currentCard = deck;
+    if (currentCard->value != NULL) {
+        validInput = true;
+    } else {
+        validInput = false;
+    }
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int counter = 0;
+    int lines = 0;
+
+    while (currentCard->value != NULL) {
+        printf("[]\t");
+        counter++;
+        if (counter == 7) {
+            if (lines == 0) {
+                printf("\t[]\tF1");
+            } else if (lines == 2) {
+                printf("\t[]\tF2");
+            } else if (lines == 4) {
+                printf("\t[]\tF3");
+            } else if (lines == 6) {
+                printf("\t[]\tF4");
+            }
+            printf("\n");
+            counter = 0;
+            lines++;
+        }
+        currentCard = currentCard->next;
+    }
+    printInputStatus(command, validInput);
+    return deck;
+}
+
+///
+/// \param command
+/// \param deck
+void showCommand(char command[], card *deck) {
+    bool validInput;
+
+    if (deck->value != NULL) {
+        validInput = true;
+    } else {
+        validInput = false;
+    }
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int counter = 0;
+    int lines = 0;
+
+    while (deck->value != NULL) {
+        printf("%s\t", deck->value);
+        counter++;
+        if (counter == 7) {
+            if (lines == 0) {
+                printf("\t[]\tF1");
+            } else if (lines == 2) {
+                printf("\t[]\tF2");
+            } else if (lines == 4) {
+                printf("\t[]\tF3");
+            } else if (lines == 6) {
+                printf("\t[]\tF4");
+            }
+            printf("\n");
+            counter = 0;
+            lines++;
+        }
+        deck = deck->next;
+    }
+    printInputStatus(command, validInput);
+}
+
+///
+/// \param deck
+/// \param command
+void printGame(card *deck, char command[]) {
+    bool validInput;
+    card *currentCard = deck;
+
+    if (deck->value != NULL) {
+        validInput = true;
+    } else {
+        validInput = false;
+    }
+
+
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int counter = 0;
+    int lines = 0;
+
+    while (currentCard->value != NULL) {
+        printf("[]\t");
+        counter++;
+        if (counter == 7) {
+            if (lines == 0) {
+                printf("\t[]\tF1");
+            } else if (lines == 2) {
+                printf("\t[]\tF2");
+            } else if (lines == 4) {
+                printf("\t[]\tF3");
+            } else if (lines == 6) {
+                printf("\t[]\tF4");
+            }
+            printf("\n");
+            counter = 0;
+            lines++;
+        }
+        currentCard = currentCard->next;
+    }
+    printInputStatus(command, validInput);
+}
+
+///
+/// \param head
+/// \param split
+/// \return
 struct card *commandSI(card *head, int split) {
 
     card *head1 = NULL;
@@ -107,226 +275,16 @@ struct card *commandSI(card *head, int split) {
     return newDeck;
 }
 
-
-//Saves the deck to a file.
-void saveDeck(card *deck, char filename[]) {
-    char nameOfFile[28];
-    FILE *f;
-    strcpy(nameOfFile, filename);
-    strcat(nameOfFile, ".txt");
-    f = fopen(nameOfFile, "w");
-
-    while (deck->value != NULL) {
-        fprintf(f, deck->value);
-        fprintf(f, "\n");
-        deck = deck->next;
-    }
-    fclose(f);
-}
-
-//prints out an empty version of the default output
-void printDefault(char *lastCommand, char *message) {
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF1\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF2\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF3\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF4\n");
-    printf("LAST command: %s", lastCommand);
-    printf("Message: %s\n", message);
-    printf("INPUT>");
-}
-
-
-void printInputStatus(char *lastCommand, bool success) {
-    printf("\nLAST command: %\n", lastCommand);
-    if (success) {
-        printf("Message: OK\n");
-    } else {
-        printf("Message: ERROR\n");
-    }
-    printf("INPUT>");
-}
-
-card *loadDeck(char filename[], char command[]) {
-    bool execute;
-    card *deck = createDeck(filename);
-    card *currentCard = deck;
-    if (currentCard->value != NULL) {
-        execute = true;
-    } else {
-        execute = false;
-    }
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    int counter = 0;
-    int lines = 0;
-
-    while (currentCard->value != NULL) {
-        printf("[]\t");
-        counter++;
-        if (counter == 7) {
-            if (lines == 0) {
-                printf("\t[]\tF1");
-            } else if (lines == 2) {
-                printf("\t[]\tF2");
-            } else if (lines == 4) {
-                printf("\t[]\tF3");
-            } else if (lines == 6) {
-                printf("\t[]\tF4");
-            }
-            printf("\n");
-            counter = 0;
-            lines++;
-        }
-        currentCard = currentCard->next;
-    }
-    printInputStatus(command, execute);
-    return deck;
-}
-
-// This is a command that shows the deck containing all the cards.
-void showCommand(char command[], card *deck) {
-    bool execute;
-
-    if (deck->value != NULL) {
-        execute = true;
-    } else {
-        execute = false;
-    }
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    int counter = 0;
-    int lines = 0;
-
-    while (deck->value != NULL) {
-        printf("%s\t", deck->value);
-        counter++;
-        if (counter == 7) {
-            if (lines == 0) {
-                printf("\t[]\tF1");
-            } else if (lines == 2) {
-                printf("\t[]\tF2");
-            } else if (lines == 4) {
-                printf("\t[]\tF3");
-            } else if (lines == 6) {
-                printf("\t[]\tF4");
-            }
-            printf("\n");
-            counter = 0;
-            lines++;
-        }
-        deck = deck->next;
-    }
-    printInputStatus(command, execute);
-}
-
-void printGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, int longest) {
-    card *tmp1 = c1;
-    card *tmp2 = c2;
-    card *tmp3 = c3;
-    card *tmp4 = c4;
-    card *tmp5 = c5;
-    card *tmp6 = c6;
-    card *tmp7 = c7;
-    int num = 1;
-
-    for (int i = 0; i < longest; ++i) {
-        char c11, c12, c21, c22, c31, c32, c41, c42, c51, c52, c61, c62, c71, c72;
-        if (tmp1 != NULL) {
-            c11 = tmp1->value[0];
-            c12 = tmp1->value[1];
-        } else {
-            c11 = ' ';
-            c12 = ' ';
-        }
-        if (tmp2 != NULL) {
-            c21 = tmp2->value[0];
-            c22 = tmp2->value[1];
-        } else {
-            c21 = ' ';
-            c22 = ' ';
-        }
-        if (tmp3 != NULL) {
-            c31 = tmp3->value[0];
-            c32 = tmp3->value[1];
-        } else {
-            c31 = ' ';
-            c32 = ' ';
-        }
-        if (tmp4 != NULL) {
-            c41 = tmp4->value[0];
-            c42 = tmp4->value[1];
-        } else {
-            c41 = ' ';
-            c42 = ' ';
-        }
-        if (tmp5 != NULL) {
-            c51 = tmp5->value[0];
-            c52 = tmp5->value[1];
-        } else {
-            c51 = ' ';
-            c52 = ' ';
-        }
-        if (tmp6 != NULL) {
-            c61 = tmp6->value[0];
-            c62 = tmp6->value[1];
-        } else {
-            c61 = ' ';
-            c62 = ' ';
-        }
-        if (tmp7 != NULL) {
-            c71 = tmp7->value[0];
-            c72 = tmp7->value[1];
-        } else {
-            c71 = ' ';
-            c72 = ' ';
-        }
-        if (i == 0 || i == 2 || i == 4 || i == 6) {
-            printf("%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t\t%s\tF%i\n", c11, c12, c21, c22, c31, c32, c41, c42, c51,
-                   c52, c61, c62, c71, c72, "[]", num);
-            num++;
-        } else {
-            printf("%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t%c%c\t\n", c11, c12, c21, c22, c31, c32, c41, c42, c51, c52,
-                   c61, c62, c71, c72);
-
-        }
-        if (tmp1 == NULL) {
-            tmp1 = NULL;
-        } else {
-            tmp1 = tmp1->next;
-        }
-        if (tmp2 == NULL) {
-            tmp2 = NULL;
-        } else {
-            tmp2 = tmp2->next;
-        }
-        if (tmp3 == NULL) {
-            tmp3 = NULL;
-        } else {
-            tmp3 = tmp3->next;
-        }
-        if (tmp4 == NULL) {
-            tmp4 = NULL;
-        } else {
-            tmp4 = tmp4->next;
-        }
-        if (tmp5 == NULL) {
-            tmp5 = NULL;
-        } else {
-            tmp5 = tmp5->next;
-        }
-        if (tmp6 == NULL) {
-            tmp6 = NULL;
-        } else {
-            tmp6 = tmp6->next;
-        }
-        if (tmp7 == NULL) {
-            tmp7 = NULL;
-        } else {
-            tmp7 = tmp7->next;
-        }
-    }
-}
-
-
+///
+/// \param c1
+/// \param c2
+/// \param c3
+/// \param c4
+/// \param c5
+/// \param c6
+/// \param c7
+/// \param deck
+/// \param command
 void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, card *deck, char *command) {
     card *tmp;
     c1 = deck;
@@ -370,7 +328,7 @@ void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *
     tmp->next = NULL;
 
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    printGame(c1, c2, c3, c4, c5, c6, c7, 11);
+    printGame(deck,command);
 
     printInputStatus(command, true);
 
@@ -389,7 +347,8 @@ void printStart(void) {
     printf("INPUT>");
 }
 
-
+///
+/// \return
 int main() {
 
     bool gameInProgress = true;
@@ -430,7 +389,7 @@ int main() {
                     } else
                         deck = loadDeck("", input);
                 } else {
-                    printDefault(input, "ERROR");
+                    defaultTemplate(input, "ERROR");
                 }
 
                 break;
@@ -452,9 +411,9 @@ int main() {
                         char *fileName;
                         fileName = strstr(input, " ") + 1;
                         strtok(fileName, "\n");
-                        saveDeck(deck, fileName);
+                        //saveDeck(deck, fileName);
                     } else {
-                        saveDeck(deck, "cards");
+                        //saveDeck(deck, "cards");
                     }
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
@@ -497,10 +456,12 @@ int main() {
                         } else {
                             number = rand() % 52;
                             deck = commandSI(deck, number);
+                            printGame(deck,input);
                         }
                     }
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
+                    printGame(deck,input);
                 }
                 break;
             case 10:
@@ -516,9 +477,9 @@ int main() {
 
                     }
                 }
-
                 break;
         }
+
     }
 
     return 0;
