@@ -15,9 +15,9 @@ typedef struct Card card;
 /// \return
 card* makeDeck (char filename[]){
     char nameOfFile[80];
-    card *nextCard;
-    card *currentCard;
-    card *prevCard;
+    card *nextCard = NULL;
+    card *currentCard = NULL;
+    card *prevCard = NULL;
     FILE* file;
     strcpy(nameOfFile, filename);
     strcat(nameOfFile, ".txt");
@@ -26,7 +26,7 @@ card* makeDeck (char filename[]){
 
     for (int i = 0; i < 52; i++){
         fscanf(file, "%s", currentCard -> value);
-        currentCard -> isVisible = true;
+        currentCard -> isVisible = false;
         if (nextCard != NULL){
             prevCard -> next = currentCard;
         }
@@ -97,30 +97,34 @@ card *loadDeck(char filename[], char command[]) {
     } else {
         validInput = false;
     }
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    int counter = 0;
-    int lines = 0;
+    /*printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int xPos = 0;
+    int yPos = 0;
 
     while (currentCard->value != NULL) {
-        printf("[]\t");
-        counter++;
-        if (counter == 7) {
-            if (lines == 0) {
+        if(currentCard->isVisible){
+            printf("%s\t", deck->value);
+        } else {
+            printf("[]\t");
+        }
+        xPos++;
+        if (xPos == 7) {
+            if (yPos == 0) {
                 printf("\t[]\tF1");
-            } else if (lines == 2) {
+            } else if (yPos == 2) {
                 printf("\t[]\tF2");
-            } else if (lines == 4) {
+            } else if (yPos == 4) {
                 printf("\t[]\tF3");
-            } else if (lines == 6) {
+            } else if (yPos == 6) {
                 printf("\t[]\tF4");
             }
             printf("\n");
-            counter = 0;
-            lines++;
+            xPos = 0;
+            yPos++;
         }
-        currentCard = currentCard->next;
+        deck = deck->next;
     }
-    printInputStatus(command, validInput);
+    printInputStatus(command, validInput);*/
     return deck;
 }
 
@@ -135,7 +139,13 @@ void showCommand(char command[], card *deck) {
     } else {
         validInput = false;
     }
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+
+    while (deck->value != NULL) {
+        deck->isVisible = true;
+        deck = deck->next;
+    }
+
+    /*printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     int counter = 0;
     int lines = 0;
 
@@ -158,7 +168,7 @@ void showCommand(char command[], card *deck) {
         }
         deck = deck->next;
     }
-    printInputStatus(command, validInput);
+    printInputStatus(command, validInput);*/
 }
 
 ///
@@ -174,8 +184,37 @@ void printGame(card *deck, char command[]) {
         validInput = false;
     }
 
-
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    int xPos = 0;
+    int yPos = 0;
+
+    while (deck->value != NULL) {
+        if(deck->isVisible){
+            printf("%s\t", deck->value);
+        } else {
+            printf("[]\t");
+        }
+        xPos++;
+        if (xPos == 7) {
+            if (yPos == 0) {
+                printf("\t[]\tF1");
+            } else if (yPos == 2) {
+                printf("\t[]\tF2");
+            } else if (yPos == 4) {
+                printf("\t[]\tF3");
+            } else if (yPos == 6) {
+                printf("\t[]\tF4");
+            }
+            printf("\n");
+            xPos = 0;
+            yPos++;
+        }
+        deck = deck->next;
+    }
+    printInputStatus(command, validInput);
+
+
+    /*printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     int counter = 0;
     int lines = 0;
 
@@ -198,7 +237,7 @@ void printGame(card *deck, char command[]) {
         }
         currentCard = currentCard->next;
     }
-    printInputStatus(command, validInput);
+    printInputStatus(command, validInput);*/
 }
 
 ///
@@ -388,6 +427,7 @@ int main() {
                         deck = loadDeck(fileName, input);
                     } else
                         deck = loadDeck("", input);
+                        printGame(deck, input);
                 } else {
                     defaultTemplate(input, "ERROR");
                 }
@@ -431,6 +471,7 @@ int main() {
                 if (gamePhase == 0) {
                     printf("\nShow\n");
                     showCommand(input, deck);
+                    printGame(deck, input);
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
                 }
