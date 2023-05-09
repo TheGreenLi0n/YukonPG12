@@ -75,23 +75,6 @@ void moveCard(card **sourcePile, card **destinationPile){
 }
 
 ///
-/// \param deck
-/// \param filename
-/*void saveDeck(card *deck, char filename[]) {
-    char nameOfFile[28];
-    FILE *f;
-    strcpy(nameOfFile, filename);
-    strcat(nameOfFile, ".txt");
-    f = fopen(nameOfFile, "w");
-
-    while (deck->value != NULL) {
-        fprintf(f, deck->value);
-        fprintf(f, "\n");
-        deck = deck->next;
-    }
-    fclose(f);
-}*/
-///
 /// \param lastCommand
 /// \param success
 void printInputStatus(char *lastCommand, bool validInput) {
@@ -152,33 +135,160 @@ void showCommand(char command[], card *deck) {
 ///
 /// \param deck
 /// \param command
-void printGame(card *deck, char command[], bool validInput) {
+void printGame(card *deck, char command[], bool validInput, int gameState, card* c1, card* c2, card* c3, card* c4, card* c5, card* c6, card* c7, card* f1, card* f2, card* f3, card* f4) {
+
     printf("\n\nC1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+
     int xPos = 0;
     int yPos = 0;
 
-    while (deck->value != NULL) {
-        if(deck->isVisible){
-            printf("%s\t", deck->value);
-        } else {
-            printf("[]\t");
+    if (gameState == 1) {
+        card *tmp;
+        c1 = deck;
+        c1->isVisible = true;
+        c2 = c1->next;
+        c1->next = NULL;
+        tmp = c2;
+        for (int i = 0; i < 5; ++i) {
+            if (i == 0)
+                tmp->isVisible = false;
+            tmp = tmp->next;
         }
-        xPos++;
-        if (xPos == 7) {
-            if (yPos == 0) {
-                printf("\t[]\tF1");
-            } else if (yPos == 2) {
-                printf("\t[]\tF2");
-            } else if (yPos == 4) {
-                printf("\t[]\tF3");
-            } else if (yPos == 6) {
-                printf("\t[]\tF4");
+        c3 = tmp->next;
+        tmp->next = NULL;
+        tmp = c3;
+        for (int i = 0; i < 6; ++i) {
+            if (i <= 1)
+                tmp->isVisible = false;
+            tmp = tmp->next;
+        }
+        c4 = tmp->next;
+        tmp->next = NULL;
+        tmp = c4;
+        for (int i = 0; i < 7; ++i) {
+            if (i <= 2)
+                tmp->isVisible = false;
+            tmp = tmp->next;
+        }
+        c5 = tmp->next;
+        tmp->next = NULL;
+        tmp = c5;
+        for (int i = 0; i < 8; ++i) {
+            if (i <= 3)
+                tmp->isVisible = false;
+            tmp = tmp->next;
+        }
+        c6 = tmp->next;
+        tmp->next = NULL;
+        tmp = c6;
+        for (int i = 0; i < 9; ++i) {
+            if (i <= 4)
+                tmp->isVisible = false;
+            tmp = tmp->next;
+        }
+        c7 = tmp->next;
+        tmp->next = NULL;
+        tmp = c7;
+        for (int i = 0; i < 10; ++i) {
+            if (i <= 3)
+                tmp->isVisible = false;
+            tmp = tmp->next;
+        }
+        tmp->next = NULL;
+
+
+        for (int i = 0; i < 7; ++i) {
+            if (c1->next != NULL) {
+                if (c1->isVisible) {
+                    printf("%s\t", c1->value);
+                } else {
+                    printf("[]\t");
+                }
             }
-            printf("\n");
-            xPos = 0;
-            yPos++;
+            if (c2->next != NULL) {
+                if (c2->isVisible) {
+                    printf("%s\t", c2->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+            if (c3->next != NULL) {
+                if (c3->isVisible) {
+                    printf("%s\t", c3->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+            if (c4->next != NULL) {
+                if (c4->isVisible) {
+                    printf("%s\t", c4->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+            if (c5->next != NULL) {
+                if (c5->isVisible) {
+                    printf("%s\t", c5->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+            if (c6->next != NULL) {
+                if (c6->isVisible) {
+                    printf("%s\t", c6->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+            if (c7->next != NULL) {
+                if (c7->isVisible) {
+                    printf("%s\t", c7->value);
+                } else {
+                    printf("[]\t");
+                }
+            }
+
+            xPos++;
+            if (xPos == 7) {
+                if (yPos == 0) {
+                    printf("\t[]\tF1");
+                } else if (yPos == 2) {
+                    printf("\t[]\tF2");
+                } else if (yPos == 4) {
+                    printf("\t[]\tF3");
+                } else if (yPos == 6) {
+                    printf("\t[]\tF4");
+                }
+                printf("\n");
+                xPos = 0;
+                yPos++;
+            }
         }
-        deck = deck->next;
+    } else {
+        while (deck->value != NULL) {
+            if (deck->isVisible) {
+                printf("%s\t", deck->value);
+            } else {
+                printf("[]\t");
+            }
+            xPos++;
+            if (xPos == 7) {
+                if (yPos == 0) {
+                    printf("\t[]\tF1");
+                } else if (yPos == 2) {
+                    printf("\t[]\tF2");
+                } else if (yPos == 4) {
+                    printf("\t[]\tF3");
+                } else if (yPos == 6) {
+                    printf("\t[]\tF4");
+                } else {
+                }
+                printf("\n");
+                xPos = 0;
+                yPos++;
+            }
+            deck = deck->next;
+        }
     }
     printInputStatus(command, validInput);
 }
@@ -266,59 +376,6 @@ bool deckValid(card *deck){
 }
 
 ///
-/// \param c1
-/// \param c2
-/// \param c3
-/// \param c4
-/// \param c5
-/// \param c6
-/// \param c7
-/// \param deck
-/// \param command
-void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *c7, card *deck, char *command) {
-    card *tmp;
-    c1 = deck;
-    c1->isVisible = true;
-    c2 = c1->next;
-    c1->next = NULL;
-    tmp = c2;
-    for (int i = 0; i < 5; ++i) {
-        tmp = tmp->next;
-    }
-    c3 = tmp->next;
-    tmp->next = NULL;
-    tmp = c3;
-    for (int i = 0; i < 6; ++i) {
-        tmp = tmp->next;
-    }
-    c4 = tmp->next;
-    tmp->next = NULL;
-    tmp = c4;
-    for (int i = 0; i < 7; ++i) {
-        tmp = tmp->next;
-    }
-    c5 = tmp->next;
-    tmp->next = NULL;
-    tmp = c5;
-    for (int i = 0; i < 8; ++i) {
-        tmp = tmp->next;
-    }
-    c6 = tmp->next;
-    tmp->next = NULL;
-    tmp = c6;
-    for (int i = 0; i < 9; ++i) {
-        tmp = tmp->next;
-    }
-    c7 = tmp->next;
-    tmp->next = NULL;
-    tmp = c7;
-    for (int i = 0; i < 10; ++i) {
-        tmp = tmp->next;
-    }
-    tmp->next = NULL;
-}
-
-///
 /// \return
 int main() {
 
@@ -340,8 +397,8 @@ int main() {
         char input[20];
         fgets(input, 20, stdin);
         int command = input[0] + input[1];
-        int gameCommand = input[2];
-        int gameAction = input[5];
+        int fromPile = input[2];
+        int toPile = input[3];
         int number = ((input[3] - 48) * 10) + (input[4] - 48);
         validInput = false;
 
@@ -368,27 +425,10 @@ int main() {
                 if (gameState == 0) {
                     validInput = true;
                     gameState = 1;
-                    //playGame(c1, c2, c3, c4, c5, c6, c7, deck, input);
                 } else {
                     printf("\nThis command is not available during the play phase\n");
                 }
 
-                break;
-                //SD
-            case 151:
-                if (gameState == 0) {
-                    if (input[2] != 10) {
-                        validInput = true;
-                        char *fileName;
-                        fileName = strstr(input, " ") + 1;
-                        strtok(fileName, "\n");
-                        //saveDeck(deck, fileName);
-                    } else {
-                        //saveDeck(deck, "cards");
-                    }
-                } else {
-                    printf("\nCommand not available in the PLAY phase\n");
-                }
                 break;
                 //Q
             case 91:
@@ -444,16 +484,12 @@ int main() {
 
             default:
                 if (gameState == 1) {
-                    if (gameCommand == 45 || gameAction == 45) {
-                        validInput = true;
 
-                    } else {
-                    }
                 }
                 break;
         }
         //Input should maybe be changed to command.
-        printGame(deck, input, validInput);
+        printGame(deck, input, validInput, gameState, c1, c2, c3, c4, c5, c6, c7, f1, f2, f3, f4);
 
     }
     return 0;
