@@ -41,6 +41,39 @@ card* makeDeck (char filename[]){
     return nextCard;
 }
 
+void moveCard(card **sourcePile, card **destinationPile){
+    if (*sourcePile == NULL)
+        return;
+
+    card* current = *sourcePile;
+    card* prev = NULL;
+
+    // Traverse to the last node of the source list
+    while (current->next != NULL) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (prev == NULL) {
+        // The source list contains only one node
+        *sourcePile = NULL;
+    } else {
+        // Remove the last node from the source list
+        prev->next = NULL;
+    }
+
+    // Insert the last node at the end of the destination list
+    if (*destinationPile == NULL) {
+        *destinationPile = current;
+    } else {
+        card* destCurrent = *destinationPile;
+        while (destCurrent->next != NULL) {
+            destCurrent = destCurrent->next;
+        }
+        destCurrent->next = current;
+    }
+}
+
 ///
 /// \param deck
 /// \param filename
@@ -62,7 +95,7 @@ card* makeDeck (char filename[]){
 /// \param lastCommand
 /// \param success
 void printInputStatus(char *lastCommand, bool validInput) {
-    printf("\nLAST command: %\n", lastCommand);
+    printf("\nLAST command: %s\n", lastCommand);
     if (validInput) {
         printf("Message: OK\n");
     } else {
@@ -119,15 +152,8 @@ void showCommand(char command[], card *deck) {
 ///
 /// \param deck
 /// \param command
-void printGame(card *deck, char command[]) {
-    bool validInput;
-    if (deck->value != NULL) {
-        validInput = true;
-    } else {
-        validInput = false;
-    }
-
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+void printGame(card *deck, char command[], bool validInput) {
+    printf("\n\nC1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     int xPos = 0;
     int yPos = 0;
 
@@ -158,66 +184,60 @@ void printGame(card *deck, char command[]) {
 }
 
 ///
-/// \param head
+/// \param next
 /// \param split
 /// \return
-struct card *commandSI(card *head, int split) {
-    card *head1 = NULL, *head2 = NULL, *tail1 = NULL, *newDeck = NULL, *tmp;
+struct card *commandSI(card *next, int split) {
+    card *next1 = NULL, *next2 = NULL, *prev1 = NULL, *newDeck = NULL, *currentCard;
+    int numOfShuffle;
     int splitRest = 52 - split;
-    int shuffleNO;
-    int biggestPile;
-    head1 = head;
-    head2 = head;
-    tail1 = head1;
-
-    if (split == 52 || split == 0) {
-        return head;
-    }
+    next1 = next;
+    next2 = next;
+    prev1 = next1;
+    int pileBiggest;
 
     for (int i = 0; i < split; ++i) {
-        head2 = head2->next;
+        next2 = next2->next;
     }
-
     for (int i = 0; i < split - 1; ++i) {
-        tail1 = tail1->next;
+        prev1 = prev1->next;
     }
-
     if (split > splitRest) {
-        shuffleNO = splitRest;
-        biggestPile = 1;
+        numOfShuffle = splitRest;
+        pileBiggest = 1;
     } else {
-        shuffleNO = split;
-        biggestPile = 2;
+        numOfShuffle = split;
+        pileBiggest = 2;
     }
 
-    newDeck = head1;
-    tmp = newDeck;
-    head1 = head1->next;
-    for (int i = 0; i < shuffleNO * 2 - 1; ++i) {
+    newDeck = next1;
+    currentCard = newDeck;
+    next1 = next1->next;
+    for (int i = 0; i < numOfShuffle * 2 - 1; ++i) {
         if (i % 2 == 1) {
-            tmp->next = head1;
-            tmp = tmp->next;
-            head1 = head1->next;
+            currentCard->next = next1;
+            currentCard = currentCard->next;
+            next1 = next1->next;
         } else {
-            tmp->next = head2;
-            tmp = tmp->next;
-            head2 = head2->next;
+            currentCard->next = next2;
+            currentCard = currentCard->next;
+            next2 = next2->next;
         }
     }
-    if (biggestPile == 1) {
-        while (head1 != tail1->next) {
-            tmp->next = head1;
-            tmp = tmp->next;
-            head1 = head1->next;
+    if (pileBiggest == 1) {
+        while (next1 != prev1->next) {
+            currentCard->next = next1;
+            currentCard = currentCard->next;
+            next1 = next1->next;
         }
     } else {
-        while (head2 != NULL) {
-            tmp->next = head2;
-            tmp = tmp->next;
-            head2 = head2->next;
+        while (next2 != NULL) {
+            currentCard->next = next2;
+            currentCard = currentCard->next;
+            next2 = next2->next;
         }
     }
-    tmp->next = NULL;
+    currentCard->next = NULL;
     return newDeck;
 }
 
@@ -272,21 +292,6 @@ void playGame(card *c1, card *c2, card *c3, card *c4, card *c5, card *c6, card *
         tmp = tmp->next;
     }
     tmp->next = NULL;
-
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
-    printGame(deck,command);
-    printInputStatus(command, true);
-}
-
-void firstPrint(void) {
-    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF1\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF2\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF3\n");
-    printf("\t\t\t\t\t\t\t\t[]\tF4\n");
-    printf("LAST command:\n");
-    printf("Message:\n");
-    printf("INPUT>");
 }
 
 ///
@@ -294,22 +299,33 @@ void firstPrint(void) {
 int main() {
 
     bool gameInProgress = true;
+    bool validInput;
     int gameState = 0;
-    firstPrint();
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
+    printf("\t\t\t\t\t\t\t\t[]F1\n");
+    printf("\t\t\t\t\t\t\t\t[]F2\n");
+    printf("\t\t\t\t\t\t\t\t[]F3\n");
+    printf("\t\t\t\t\t\t\t\t[]F4\n");
+    printf("LAST command:\n");
+    printf("Message:\n");
+    printf("INPUT>");
+
     card *deck = NULL, *c1, *c2, *c3, *c4, *c5, *c6, *c7, *f1, *f2, *f3, *f4;
 
     while (gameInProgress) {
         char input[20];
         fgets(input, 20, stdin);
-        int dec = input[0] + input[1];
+        int command = input[0] + input[1];
         int gameCommand = input[2];
         int gameAction = input[5];
         int number = ((input[3] - 48) * 10) + (input[4] - 48);
+        validInput = false;
 
-        switch (dec) {
+        switch (command) {
+            //LD
             case 144:
                 if (gameState == 0) {
-                    printf("\nLoad deck\n");
+                    validInput = true;
                     if (input[2] != 10) {
                         char *fileName;
                         fileName = strstr(input, " ") + 1;
@@ -317,25 +333,26 @@ int main() {
                         deck = loadDeck(fileName, input);
                     } else
                         deck = loadDeck("", input);
-                        printGame(deck, input);
                 } else {
                     defaultTemplate(input, "ERROR");
                 }
                 break;
+                //P
             case 90:
                 if (gameState == 0) {
-                    printf("\nPlay\n");
+                    validInput = true;
                     gameState = 1;
-                    playGame(c1, c2, c3, c4, c5, c6, c7, deck, input);
+                    //playGame(c1, c2, c3, c4, c5, c6, c7, deck, input);
                 } else {
                     printf("\nThis command is not available during the play phase\n");
                 }
 
                 break;
+                //SD
             case 151:
                 if (gameState == 0) {
-                    printf("\nSave deck\n");
                     if (input[2] != 10) {
+                        validInput = true;
                         char *fileName;
                         fileName = strstr(input, " ") + 1;
                         strtok(fileName, "\n");
@@ -347,34 +364,43 @@ int main() {
                     printf("\nCommand not available in the PLAY phase\n");
                 }
                 break;
+                //Q
             case 91:
                 if (gameState == 1) {
-                    printf("\nQuit current game\n");
+                    validInput = true;
+                    printf("\nQuitting\n");
                     gameState = 0;
+                } else {
+                    printf("\nCommand not available in the STARTUP phase\n");
                 }
                 break;
+                //SW
             case 170:
                 if (gameState == 0) {
-                    printf("\nShow\n");
                     showCommand(input, deck);
-                    printGame(deck, input);
+                    validInput = true;
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
                 }
                 break;
+                //QQ
             case 162:
                 if (gameState == 0) {
-                    printf("Quit");
+                    validInput = true;
+                    printf("Goodbye o/");
                     gameInProgress = false;
+                    continue;
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
                 }
                 break;
+                //SI
             case 156:
                 if (gameState == 0) {
                     if (deck == NULL) {
                         printf("Deck needs to be loaded first!");
                     } else {
+                        validInput = true;
                         printf("\nSplit shuffle\n");
                         if (number <= 52 && number >= 0) {
                             deck = commandSI(deck, number);
@@ -382,11 +408,9 @@ int main() {
                             number = rand() % 52;
                             deck = commandSI(deck, number);
                         }
-                        printGame(deck,input);
                     }
                 } else {
                     printf("\nCommand not available in the PLAY phase\n");
-                    printGame(deck,input);
                 }
                 break;
             case 10:
@@ -395,14 +419,16 @@ int main() {
             default:
                 if (gameState == 1) {
                     if (gameCommand == 45 || gameAction == 45) {
-                        printf("\nGame moveCard\n");
-                        printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n");
-                        printInputStatus(input, true);
+                        validInput = true;
+
                     } else {
                     }
                 }
                 break;
         }
+        //Input should maybe be changed to command.
+        printGame(deck, input, validInput);
+
     }
     return 0;
 }
