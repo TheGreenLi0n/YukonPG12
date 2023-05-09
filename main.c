@@ -241,6 +241,30 @@ struct card *commandSI(card *next, int split) {
     return newDeck;
 }
 
+bool deckValid(card *deck){
+    int numOfDiamond = 0;
+    int numOfHeart = 0;
+    int numOfClub = 0;
+    int numOfSpade = 0;
+
+    while (deck->value != NULL) {
+        if(deck->value[1] == 68)
+            numOfDiamond++;
+        if(deck->value[1] == 67)
+            numOfClub++;
+        if(deck->value[1] == 72)
+            numOfHeart++;
+        if(deck->value[1] == 83)
+            numOfSpade++;
+        deck = deck->next;
+    }
+    if(numOfSpade == 13 && numOfHeart == 13 && numOfDiamond == 13 && numOfClub == 13) {
+        return true;
+    } else{
+        return false;
+    }
+}
+
 ///
 /// \param c1
 /// \param c2
@@ -331,8 +355,10 @@ int main() {
                         fileName = strstr(input, " ") + 1;
                         strtok(fileName, "\n");
                         deck = loadDeck(fileName, input);
+                        if (!deckValid(deck))
+                            validInput = false;
                     } else
-                        deck = loadDeck("", input);
+                        deck = loadDeck("Deck", input);
                 } else {
                     defaultTemplate(input, "ERROR");
                 }
